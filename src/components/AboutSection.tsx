@@ -1,24 +1,57 @@
-"use client";
-import React, { useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, MeshDistortMaterial } from "@react-three/drei";
-import { motion } from "framer-motion";
-import * as THREE from "three";
+'use client';
+
+import { useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Float, MeshDistortMaterial } from '@react-three/drei';
+import { motion, useInView } from 'framer-motion';
+import * as THREE from 'three';
 
 // Animated glitch text component
-const GlitchText = ({ children, className }: { children: string; className?: string }) => {
+const GlitchText = ({ text }: { text: string }) => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const ref = useRef<HTMLHeadingElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  const scramble = (element: HTMLHeadingElement) => {
+    let iteration = 0;
+    const originalText = text;
+    
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
+      element.innerText = originalText
+        .split("")
+        .map((letter, index) => {
+          if (index < iteration) {
+            return originalText[index];
+          }
+          return letters[Math.floor(Math.random() * 26)];
+        })
+        .join("");
+
+      if (iteration >= originalText.length) {
+        clearInterval(intervalRef.current);
+      }
+
+      iteration += 1 / 3;
+    }, 30);
+  };
+
+  if (isInView && ref.current) {
+    scramble(ref.current);
+  }
+
   return (
-    <div className={`relative ${className}`}>
-      <span className="absolute inset-0 text-transparent bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-yellow-400 bg-clip-text animate-pulse">
-        {children}
-      </span>
-      <span className="relative text-transparent bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-yellow-400 bg-clip-text">
-        {children}
-      </span>
-      <span className="absolute inset-0 text-transparent bg-gradient-to-r from-red-400 via-purple-400 to-blue-400 bg-clip-text animate-pulse" style={{ animationDelay: '0.1s' }}>
-        {children}
-      </span>
-    </div>
+    <h2 
+      ref={ref} 
+      className="font-orbitron text-3xl font-bold text-white md:text-4xl"
+    >
+      {text}
+    </h2>
   );
 };
 
@@ -79,33 +112,6 @@ function HolographicSphere() {
   );
 }
 
-function EnergyRing() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z = state.clock.elapsedTime * 0.8;
-    }
-  });
-
-  return (
-    <Float speed={1.8} rotationIntensity={1.8} floatIntensity={2.2}>
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <torusGeometry args={[2, 0.3, 16, 100]} />
-        <MeshDistortMaterial 
-          color="#ffb347" 
-          metalness={0.7} 
-          roughness={0.15} 
-          emissive="#ffb347" 
-          emissiveIntensity={0.6}
-          distort={0.4}
-          speed={3}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
 const features = [
   {
     title: "NEURAL-LINK VR ARENAS",
@@ -144,159 +150,161 @@ const stats = [
   { value: "1337", label: "ACTIVE CYBER-MAGES" }
 ];
 
-const AboutSection = () => (
-  <section id="about" className="relative w-full min-h-screen py-32 flex items-center justify-center overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
-    {/* Animated background grid */}
-    <div className="absolute inset-0 opacity-20">
-      <div className="absolute inset-0" style={{
-        backgroundImage: `
-          linear-gradient(rgba(0, 234, 255, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 234, 255, 0.1) 1px, transparent 1px)
-        `,
-        backgroundSize: '50px 50px',
-        animation: 'gridMove 20s linear infinite'
-      }} />
-    </div>
-
-    {/* Enhanced 3D background */}
-    <div className="absolute inset-0 z-0">
-      <Canvas camera={{ position: [0, 0, 8], fov: 60 }} shadows>
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 5, 5]} intensity={1.5} color="#00eaff" />
-        <pointLight position={[-5, -5, -5]} intensity={1} color="#f472b6" />
-        <pointLight position={[5, -5, 5]} intensity={1} color="#ffb347" />
-        
-        <CyberCube />
-        <HolographicSphere />
-        <EnergyRing />
-        
-        {/* Additional floating elements */}
-        <Float speed={1.2} rotationIntensity={1.5} floatIntensity={1.8} position={[-4, 3, -3]}>
-          <mesh>
-            <octahedronGeometry args={[0.8]} />
-            <MeshDistortMaterial 
-              color="#10b981" 
-              metalness={0.8} 
-              roughness={0.2} 
-              emissive="#10b981" 
-              emissiveIntensity={0.3}
-              distort={0.2}
-              speed={2}
-            />
-          </mesh>
-        </Float>
-        
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
-      </Canvas>
-    </div>
-
-    {/* Main content */}
-    <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
-      {/* Hero section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1 }}
-        className="text-center mb-16"
-      >
-        <GlitchText className="text-6xl sm:text-8xl font-black uppercase tracking-widest font-[Orbitron,Arial,sans-serif] drop-shadow-[0_0_30px_#00eaff] mb-6">
-          FANTASY QUEST
-        </GlitchText>
+const AboutSection = () => {
+  return (
+    <section id="about" className="relative py-20 overflow-hidden">
+      {/* Animated background grid */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          animation: 'gridMove 20s linear infinite'
+        }} />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="text-2xl sm:text-3xl text-gray-300 font-[Inter,sans-serif] mb-8"
-        >
-          <span className="text-[#00eaff] font-bold">LAGOS</span> • <span className="text-[#f472b6] font-bold">CYBERPUNK</span> • <span className="text-[#ffb347] font-bold">FANTASY</span>
-        </motion.div>
-        <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="text-xl text-gray-400 font-[Inter,sans-serif] max-w-4xl mx-auto leading-relaxed"
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="mb-12 text-center"
         >
-          Welcome to the nexus where <span className="text-[#00eaff] font-bold">digital sorcery</span> meets <span className="text-[#f472b6] font-bold">quantum reality</span>. 
-          In this cyberpunk-fantasy realm, ancient magic flows through neural networks, and every game is a portal to infinite dimensions.
-        </motion.p>
-      </motion.div>
+          <GlitchText text="ABOUT GAMEHUB" />
+          <div className="mx-auto mt-2 h-1 w-20 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+        </motion.div>
 
-      {/* Stats section */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.9, duration: 0.8 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
-      >
-        {stats.map((stat) => (
-          <div key={stat.label} className="text-center p-6 rounded-2xl bg-black/40 backdrop-blur-lg border border-cyan-400/20 hover:border-cyan-400/40 transition-all">
-            <div className="text-3xl font-bold text-[#00eaff] font-[Orbitron,Arial,sans-serif] mb-2">{stat.value}</div>
-            <div className="text-sm text-gray-400 font-[Inter,sans-serif] uppercase tracking-wider">{stat.label}</div>
-          </div>
-        ))}
-      </motion.div>
-
-      {/* Features grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {features.map((feature, i) => (
+        <div className="grid gap-8 md:grid-cols-2 items-center">
+          {/* 3D Element */}
           <motion.div
-            key={feature.title}
-            initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 + i * 0.1, duration: 0.8 }}
-            className={`relative p-8 rounded-3xl bg-gradient-to-br ${feature.color} shadow-2xl border-2 border-white/20 hover:border-white/40 transition-all duration-500 group`}
-            style={{ 
-              boxShadow: `0 8px 40px ${feature.glow}40`,
-              background: `linear-gradient(135deg, ${feature.color.split(' ').join(', ')})`
-            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="h-[400px] w-full rounded-lg bg-black/30 backdrop-blur-sm relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-black/20 rounded-3xl backdrop-blur-sm"></div>
-            <div className="relative z-10">
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <div className="text-2xl font-bold font-[Orbitron,Arial,sans-serif] text-white mb-4 drop-shadow-lg">
-                {feature.title}
-              </div>
-              <div className="text-gray-100/90 font-[Inter,sans-serif] leading-relaxed">
-                {feature.desc}
-              </div>
-            </div>
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            {/* Glow effects */}
+            <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl"></div>
+            <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl"></div>
+            
+            <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[10, 10, 5]} intensity={1} color="#8b5cf6" />
+              <pointLight position={[-5, -5, -5]} intensity={1} color="#f472b6" />
+              <CyberCube />
+              <HolographicSphere />
+              <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+            </Canvas>
           </motion.div>
-        ))}
+
+          {/* Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="flex flex-col space-y-6"
+          >
+            <h3 className="font-orbitron text-2xl font-bold text-purple-400">
+              WELCOME TO THE DIGITAL FRONTIER
+            </h3>
+            
+            <p className="text-gray-300">
+              GameHub is the nexus where reality and digital worlds collide. Founded in 2023 by a collective of game developers, digital artists, and cybernetic enthusiasts, we&apos;ve created a space where imagination knows no bounds.
+            </p>
+            
+            <p className="text-gray-300">
+              Our mission is to push the boundaries of interactive entertainment, blending cutting-edge technology with immersive storytelling to create experiences that transcend traditional gaming.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              {stats.map((stat) => (
+                <div key={stat.label} className="rounded-lg border border-purple-500/30 bg-purple-500/10 p-4 hover:border-purple-500/50 transition-all duration-300">
+                  <div className="mb-2 text-xl font-bold text-purple-400 font-orbitron">{stat.value}</div>
+                  <div className="text-sm text-gray-400">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Features grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="mt-16"
+        >
+          <h3 className="font-orbitron text-2xl font-bold text-center text-white mb-8">
+            OUR <span className="text-purple-400">FEATURES</span>
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                className="group relative overflow-hidden rounded-lg border border-gray-800 bg-gray-900/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/20 text-2xl">
+                    {feature.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-orbitron text-lg font-bold text-white">{feature.title}</h4>
+                    <p className="mt-2 text-gray-400">{feature.desc}</p>
+                  </div>
+                </div>
+                
+                {/* Hover effect */}
+                <div className="absolute -bottom-2 -right-2 h-24 w-24 rounded-full bg-gradient-to-br from-transparent via-purple-500/10 to-purple-500/30 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Call to action */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="mt-16 rounded-lg border border-purple-500/30 bg-black/60 p-8 text-center backdrop-blur-lg"
+        >
+          <div className="mb-4 font-orbitron text-2xl font-bold uppercase tracking-widest text-purple-400">
+            JOIN THE CYBER-MAGE REVOLUTION
+          </div>
+          <div className="mb-6 text-gray-300">
+            <span className="font-bold text-cyan-400">Neural sync required</span> • 
+            <span className="font-bold text-pink-400">Holographic gear provided</span> • 
+            <span className="font-bold text-green-400">24/7 support</span>
+          </div>
+          <div className="text-sm text-gray-500">
+            Enter the matrix • Hack reality • Cast digital spells
+          </div>
+        </motion.div>
       </div>
 
-      {/* Call to action */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="text-center mt-16 p-8 rounded-3xl bg-black/60 backdrop-blur-lg border border-cyan-400/30"
-      >
-        <div className="text-2xl font-bold font-[Orbitron,Arial,sans-serif] text-[#00eaff] mb-4 uppercase tracking-widest">
-          JOIN THE CYBER-MAGE REVOLUTION
-        </div>
-        <div className="text-gray-300 font-[Inter,sans-serif] mb-6">
-          <span className="text-[#ffb347] font-bold">Victoria Island, Lagos</span> • <span className="text-[#f472b6] font-bold">24/7 Access</span> • <span className="text-[#10b981] font-bold">Neural Sync Ready</span>
-        </div>
-        <div className="text-sm text-gray-500 font-[Inter,sans-serif]">
-          Enter the matrix • Hack reality • Cast digital spells
-        </div>
-      </motion.div>
-    </div>
+      {/* Decorative elements */}
+      <div className="absolute -bottom-10 -left-10 h-64 w-64 rounded-full bg-purple-500/10 blur-3xl" />
+      <div className="absolute -right-10 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-indigo-500/10 blur-3xl" />
 
-    <style jsx>{`
-      @keyframes gridMove {
-        0% { transform: translate(0, 0); }
-        100% { transform: translate(50px, 50px); }
-      }
-    `}</style>
-  </section>
-);
+      <style jsx>{`
+        @keyframes gridMove {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(50px, 50px); }
+        }
+      `}</style>
+    </section>
+  );
+};
 
-export default AboutSection; 
+
+export default AboutSection;

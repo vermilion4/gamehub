@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import NeuralHackGame from "@/components/NeuralHackGame";
 import WordConnectGame from "@/components/WordConnectGame";
 import FruitSliceGame from "@/components/FruitSliceGame";
+import Link from "next/link";
 
 const gameComponents = {
   "neural-hack": NeuralHackGame,
@@ -26,12 +27,12 @@ export default function GamePage() {
           <p className="text-gray-300 mb-6">
             The game &quot;{gameId}&quot; doesn&apos;t exist.
           </p>
-          <a 
+          <Link 
             href="/games"
             className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold font-[Orbitron,Arial,sans-serif] transition-all uppercase tracking-widest"
           >
             Back to Games
-          </a>
+          </Link>
         </div>
       </div>
     );

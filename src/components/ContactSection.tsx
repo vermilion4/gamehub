@@ -160,22 +160,22 @@ const AnimatedInput = ({
   setIsFocused: (focused: boolean) => void;
 }) => (
   <motion.div
-    initial={{ opacity: 0, x: -50 }}
-    whileInView={{ opacity: 1, x: 0 }}
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.6 }}
+    transition={{ duration: 0.4 }}
     className="relative"
   >
     <motion.div
       animate={{
         scale: isFocused ? 1.02 : 1,
         boxShadow: isFocused 
-          ? "0 0 30px rgba(0, 234, 255, 0.3)" 
-          : "0 0 10px rgba(0, 234, 255, 0.1)"
+          ? "0 0 20px rgba(139, 92, 246, 0.3)" 
+          : "0 0 10px rgba(139, 92, 246, 0.1)"
       }}
       className="relative"
     >
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-2xl z-10">
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl z-10">
         {icon}
       </div>
       {type === 'textarea' ? (
@@ -186,7 +186,7 @@ const AnimatedInput = ({
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
           rows={4}
-          className="w-full pl-12 pr-4 py-4 rounded-2xl bg-black/60 backdrop-blur-lg border-2 border-[#00eaff]/30 text-white font-[Inter,sans-serif] focus:border-[#00eaff] outline-none transition-all duration-300 placeholder-gray-400"
+          className="w-full pl-12 pr-4 py-3 rounded-lg bg-black/60 backdrop-blur-lg border border-purple-500/30 text-white focus:border-purple-500 outline-none transition-all duration-300 placeholder-gray-400"
         />
       ) : (
         <input
@@ -196,10 +196,10 @@ const AnimatedInput = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="w-full pl-12 pr-4 py-4 rounded-2xl bg-black/60 backdrop-blur-lg border-2 border-[#00eaff]/30 text-white font-[Inter,sans-serif] focus:border-[#00eaff] outline-none transition-all duration-300 placeholder-gray-400"
+          className="w-full pl-12 pr-4 py-3 rounded-lg bg-black/60 backdrop-blur-lg border border-purple-500/30 text-white focus:border-purple-500 outline-none transition-all duration-300 placeholder-gray-400"
         />
       )}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-[#00eaff]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-purple-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
     </motion.div>
   </motion.div>
 );
@@ -233,13 +233,13 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative w-full min-h-screen py-32 bg-gradient-to-br from-black via-gray-900 to-black overflow-hidden">
+    <section id="contact" className="relative py-20 overflow-hidden">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 234, 255, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 234, 255, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
           animation: 'gridMove 25s linear infinite'
@@ -248,10 +248,10 @@ const ContactSection = () => {
 
       {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(30)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-[#00eaff] rounded-full"
+            className="absolute w-1 h-1 bg-purple-500 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -270,50 +270,35 @@ const ContactSection = () => {
         ))}
       </div>
 
-      {/* 3D Background */}
-      <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 10], fov: 60 }}>
-          <ambientLight intensity={0.3} />
-          <directionalLight position={[5, 5, 5]} intensity={1} color="#00eaff" />
-          <pointLight position={[-5, -5, -5]} intensity={0.8} color="#f472b6" />
-          <pointLight position={[5, -5, 5]} intensity={0.8} color="#ffb347" />
-          
-          <NeuralNetwork />
-          <HolographicInterface />
-          <DataOrb position={[-3, 2, -2]} color="#00eaff" speed={1} />
-          <DataOrb position={[3, -2, -1]} color="#f472b6" speed={1.5} />
-          <DataOrb position={[-2, -3, 1]} color="#ffb347" speed={0.8} />
-          
-          <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.3} />
-        </Canvas>
-      </div>
+      {/* Decorative elements */}
+      <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
+      <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-indigo-500/10 blur-3xl" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
+      <div className="container relative z-10 mx-auto px-4">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="mb-12 text-center"
         >
-          <h2 className="text-6xl sm:text-8xl font-black uppercase tracking-widest text-transparent bg-gradient-to-r from-[#00eaff] via-[#f472b6] to-[#ffb347] bg-clip-text font-[Orbitron,Arial,sans-serif] mb-6 drop-shadow-[0_0_30px_#00eaff]">
-            NEURAL LINK
+          <h2 className="font-orbitron text-3xl font-bold text-white md:text-4xl">
+            CONTACT <span className="text-purple-400">US</span>
           </h2>
-          <p className="text-2xl text-gray-400 font-[Inter,sans-serif] max-w-4xl mx-auto leading-relaxed">
-            Establish <span className="text-[#00eaff] font-bold">quantum communication</span> with our cyber-mage operators. 
-            Your message will be transmitted through <span className="text-[#f472b6] font-bold">neural networks</span> and 
-            <span className="text-[#ffb347] font-bold"> holographic interfaces</span>.
+          <div className="mx-auto mt-2 h-1 w-20 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+          <p className="mx-auto mt-4 max-w-2xl text-gray-400">
+            Connect with our team of digital architects and game designers. Your feedback and inquiries help us shape the future of gaming.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5 }}
             className="relative"
           >
             <AnimatePresence mode="wait">
@@ -323,15 +308,15 @@ const ContactSection = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-center p-12 rounded-3xl bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-lg border-2 border-green-400/30"
+                  className="text-center p-8 rounded-lg bg-gradient-to-br from-green-400/20 to-green-500/20 backdrop-blur-lg border border-green-400/30"
                 >
-                  <div className="text-6xl mb-4">✅</div>
-                  <h3 className="text-3xl font-bold text-green-400 font-[Orbitron,Arial,sans-serif] mb-4">
-                    NEURAL SYNC COMPLETE
+                  <div className="text-5xl mb-4">✅</div>
+                  <h3 className="text-2xl font-bold text-green-400 font-orbitron mb-4">
+                    MESSAGE SENT
                   </h3>
-                  <p className="text-gray-300 font-[Inter,sans-serif]">
-                    Your message has been transmitted through the quantum network. 
-                    A cyber-mage will respond within 24 hours.
+                  <p className="text-gray-300">
+                    Your message has been sent successfully. 
+                    Our team will get back to you within 24 hours.
                   </p>
                 </motion.div>
               ) : (
@@ -340,12 +325,12 @@ const ContactSection = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="p-8 rounded-3xl bg-black/40 backdrop-blur-lg border-2 border-[#00eaff]/30 shadow-2xl"
+                  className="p-6 rounded-lg bg-black/40 backdrop-blur-lg border border-purple-500/30 shadow-lg"
                 >
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-5">
                     <AnimatedInput
                       type="text"
-                      placeholder="Enter your neural signature"
+                      placeholder="Your name"
                       icon="👤"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -355,7 +340,7 @@ const ContactSection = () => {
                     
                     <AnimatedInput
                       type="email"
-                      placeholder="Quantum email address"
+                      placeholder="Your email address"
                       icon="📧"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -365,7 +350,7 @@ const ContactSection = () => {
                     
                     <AnimatedInput
                       type="textarea"
-                      placeholder="Transmit your message through the neural network..."
+                      placeholder="Your message..."
                       icon="💬"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -381,13 +366,13 @@ const ContactSection = () => {
                       <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-[#00eaff] to-[#0099bb] text-black font-bold font-[Orbitron,Arial,sans-serif] shadow-lg border-2 border-[#00eaff] hover:from-[#0099bb] hover:to-[#00eaff] transition-all duration-300 uppercase tracking-widest text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold font-orbitron shadow-lg border border-purple-500/50 hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         animate={isSubmitting ? {
-                          background: ["linear-gradient(to right, #00eaff, #0099bb)", "linear-gradient(to right, #f472b6, #00eaff)", "linear-gradient(to right, #00eaff, #0099bb)"]
+                          background: ["linear-gradient(to right, #8b5cf6, #6366f1)", "linear-gradient(to right, #6366f1, #8b5cf6)", "linear-gradient(to right, #8b5cf6, #6366f1)"]
                         } : {}}
                         transition={{ duration: 1, repeat: isSubmitting ? Infinity : 0 }}
                       >
-                        {isSubmitting ? "ESTABLISHING NEURAL SYNC..." : "TRANSMIT MESSAGE"}
+                        {isSubmitting ? "SENDING..." : "SEND MESSAGE"}
                       </motion.button>
                     </motion.div>
                   </form>
@@ -396,74 +381,87 @@ const ContactSection = () => {
             </AnimatePresence>
           </motion.div>
 
-          {/* Contact Info & Map */}
+          {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-6"
           >
+            {/* 3D Canvas */}
+            <div className="h-[200px] rounded-lg bg-black/30 backdrop-blur-sm relative overflow-hidden">
+              <div className="absolute -top-20 -left-20 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl"></div>
+              <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl"></div>
+              
+              <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1} color="#8b5cf6" />
+                <pointLight position={[-5, -5, -5]} intensity={1} color="#f472b6" />
+                <NeuralNetwork />
+                <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+              </Canvas>
+            </div>
+            
             {/* Contact Info */}
-            <div className="p-8 rounded-3xl bg-black/40 backdrop-blur-lg border-2 border-[#f472b6]/30 shadow-2xl">
-              <h3 className="text-3xl font-bold text-[#f472b6] font-[Orbitron,Arial,sans-serif] mb-6 uppercase tracking-widest">
-                QUANTUM LOCATION
+            <div className="p-6 rounded-lg bg-black/40 backdrop-blur-lg border border-purple-500/30 shadow-lg">
+              <h3 className="text-xl font-bold text-purple-400 font-orbitron mb-4">
+                CONTACT INFO
               </h3>
               
               <div className="space-y-4">
                 <motion.div
-                  whileHover={{ scale: 1.05, x: 10 }}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  className="flex items-center gap-4 p-3 rounded-lg bg-black/20 hover:bg-black/30 transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40"
                 >
-                  <div className="text-3xl">📍</div>
+                  <div className="text-2xl">📍</div>
                   <div>
-                    <div className="text-white font-bold font-[Orbitron,Arial,sans-serif]">Victoria Island, Lagos</div>
-                    <div className="text-gray-400 font-[Inter,sans-serif] text-sm">Neural Network Hub</div>
+                    <div className="text-white font-bold font-orbitron">GameHub HQ</div>
+                    <div className="text-gray-400 text-sm">Victoria Island, Lagos</div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  whileHover={{ scale: 1.05, x: 10 }}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  className="flex items-center gap-4 p-3 rounded-lg bg-black/20 hover:bg-black/30 transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40"
                 >
-                  <div className="text-3xl">☎️</div>
+                  <div className="text-2xl">☎️</div>
                   <div>
-                    <div className="text-white font-bold font-[Orbitron,Arial,sans-serif]">+234 800 123 4567</div>
-                    <div className="text-gray-400 font-[Inter,sans-serif] text-sm">Quantum Communication Line</div>
+                    <div className="text-white font-bold font-orbitron">+234 800 123 4567</div>
+                    <div className="text-gray-400 text-sm">Mon-Fri, 9AM-5PM</div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  whileHover={{ scale: 1.05, x: 10 }}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  className="flex items-center gap-4 p-3 rounded-lg bg-black/20 hover:bg-black/30 transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40"
                 >
-                  <div className="text-3xl">🌐</div>
+                  <div className="text-2xl">📧</div>
                   <div>
-                    <div className="text-white font-bold font-[Orbitron,Arial,sans-serif]">24/7 Neural Sync</div>
-                    <div className="text-gray-400 font-[Inter,sans-serif] text-sm">Always Connected</div>
+                    <div className="text-white font-bold font-orbitron">contact@gamehub.com</div>
+                    <div className="text-gray-400 text-sm">Email us anytime</div>
                   </div>
                 </motion.div>
               </div>
 
               {/* Social Links */}
-              <div className="mt-6 pt-6 border-t border-[#f472b6]/30">
-                <div className="text-white font-bold font-[Orbitron,Arial,sans-serif] mb-4 uppercase tracking-wider">
-                  CONNECT THROUGH THE MATRIX
+              <div className="mt-6 pt-4 border-t border-purple-500/20">
+                <div className="text-white font-bold font-orbitron mb-3 text-sm">
+                  FOLLOW US
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   {[
-                    { name: "Twitter", icon: "🐦", color: "#1DA1F2" },
-                    { name: "Discord", icon: "🎮", color: "#7289DA" },
-                    { name: "Instagram", icon: "📸", color: "#E4405F" },
-                    { name: "Telegram", icon: "📱", color: "#0088CC" }
+                    { name: "Twitter", icon: "🐦", color: "#8b5cf6" },
+                    { name: "Discord", icon: "🎮", color: "#8b5cf6" },
+                    { name: "Instagram", icon: "📸", color: "#8b5cf6" },
+                    { name: "Twitch", icon: "📺", color: "#8b5cf6" }
                   ].map((social) => (
                     <motion.a
                       key={social.name}
                       href="#"
-                      whileHover={{ scale: 1.2, y: -5 }}
+                      whileHover={{ scale: 1.1, y: -3 }}
                       whileTap={{ scale: 0.9 }}
-                      className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 border-2 border-white/20 hover:border-white/40 transition-all duration-300 text-2xl"
-                      style={{ boxShadow: `0 0 20px ${social.color}40` }}
+                      className="flex items-center justify-center w-10 h-10 rounded-lg bg-black/30 hover:bg-black/50 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-300 text-xl"
                     >
                       {social.icon}
                     </motion.a>
@@ -471,53 +469,32 @@ const ContactSection = () => {
                 </div>
               </div>
             </div>
-
-            {/* Holographic Map */}
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="relative p-4 rounded-3xl bg-gradient-to-br from-[#ffb347]/20 to-[#ff6b35]/20 backdrop-blur-lg border-2 border-[#ffb347]/30 shadow-2xl"
-            >
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="text-center mb-4">
-                  <div className="text-4xl mb-2">🗺️</div>
-                  <div className="text-white font-bold font-[Orbitron,Arial,sans-serif] uppercase tracking-wider">
-                    HOLOGRAPHIC LOCATION
-                  </div>
-                </div>
-                <div className="w-full h-48 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-[#ffb347]/50 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">🌍</div>
-                    <div className="text-[#ffb347] font-bold font-[Orbitron,Arial,sans-serif]">
-                      Victoria Island
-                    </div>
-                    <div className="text-gray-400 font-[Inter,sans-serif] text-sm">
-                      Lagos, Nigeria
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
 
         {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="text-center mt-16 p-8 rounded-3xl bg-black/60 backdrop-blur-lg border border-[#00eaff]/30"
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="text-center mt-12 p-6 rounded-lg bg-black/60 backdrop-blur-lg border border-purple-500/30"
         >
-          <div className="text-2xl font-bold font-[Orbitron,Arial,sans-serif] text-[#00eaff] mb-4 uppercase tracking-widest">
-            READY TO ENTER THE MATRIX?
+          <div className="text-xl font-bold font-orbitron text-purple-400 mb-3">
+            JOIN OUR GAMING COMMUNITY
           </div>
-          <div className="text-gray-300 font-[Inter,sans-serif] mb-6">
-            <span className="text-[#f472b6] font-bold">Neural interfaces available</span> • <span className="text-[#ffb347] font-bold">Holographic tours daily</span> • <span className="text-[#10b981] font-bold">Quantum security guaranteed</span>
+          <div className="text-gray-300 mb-4">
+            <span className="font-bold text-indigo-400">Weekly tournaments</span> • 
+            <span className="font-bold text-pink-400">Early access to new games</span> • 
+            <span className="font-bold text-cyan-400">Exclusive rewards</span>
           </div>
-          <div className="text-sm text-gray-500 font-[Inter,sans-serif]">
-            Step into the future • Connect with the network • Become a cyber-mage
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg text-white font-bold font-orbitron text-sm uppercase tracking-wider hover:from-indigo-600 hover:to-purple-600 transition-all duration-300"
+          >
+            Sign Up Now
+          </motion.button>
         </motion.div>
       </div>
 
@@ -531,4 +508,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection; 
+export default ContactSection;
